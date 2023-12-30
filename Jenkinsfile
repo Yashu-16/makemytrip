@@ -37,8 +37,8 @@ pipeline {
 		stage('Building & Tag Docker Image') {
         			steps {
         				echo 'Starting Building Docker Image'
-        				sh 'docker build -t yaashu2107/makemytrip .'
-        				sh 'docker build -t makemytrip .'
+        				sh 'docker build -t yaashu2107/makemytrip:dev-makemytrip-v.1.${BUILD_NUMBER} .'
+        				sh 'docker build -t makemytrip:dev-makemytrip-v.1.${BUILD_NUMBER} .'
         				echo 'Completed Building Docker Image'
         			}
         		}
@@ -55,7 +55,7 @@ pipeline {
         			        withCredentials([string(credentialsId: 'dockerhubCred', variable:'dockerhubCred')]){
         				    sh 'docker login docker.io -u yaashu2107 -p ${dockerhubCred}'
         				    echo "Push Docker Image to Docker Hub: In Progress"
-        				    sh 'docker push yaashu2107/makemytrip:latest'
+        				    sh 'docker push yaashu2107/makemytrip:dev-makemytrip-v.1.${BUILD_NUMBER}'
         				    echo "Push Docker Image to Docker Hub: In Progress"
         				    sh 'whoami'
         				    }
@@ -70,10 +70,10 @@ pipeline {
                 			echo "List the docker images present in local"
                 			docker images
                 			echo "Tagging the Docker Image: In Progress"
-                			docker tag makemytrip:latest 389580510344.dkr.ecr.ap-south-1.amazonaws.com/makemytrip:latest
+                			docker tag makemytrip:latest 389580510344.dkr.ecr.ap-south-1.amazonaws.com/makemytrip:dev-makemytrip-v.1.${BUILD_NUMBER}
                 			echo "Tagging the Docker Image: Completed"
                 			echo "Push Docker Image to ECR: In Progress"
-                			docker push 389580510344.dkr.ecr.ap-south-1.amazonaws.com/makemytrip:latest
+                			docker push 389580510344.dkr.ecr.ap-south-1.amazonaws.com/makemytrip:dev-makemytrip-v.1.${BUILD_NUMBER}
                 			echo "Push Docker Image to ECR: Completed"
                 			"""
                 			}
