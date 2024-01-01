@@ -55,7 +55,7 @@ pipeline {
         			        withCredentials([string(credentialsId: 'dockerhubCred', variable:'dockerhubCred')]){
         				    sh 'docker login docker.io -u yaashu2107 -p ${dockerhubCred}'
         				    echo "Push Docker Image to Docker Hub: In Progress"
-        				    sh 'docker push yaashu2107/makemytrip:dev-makemytrip-v.1.${BUILD_NUMBER}'
+        				    sh 'docker push yaashu2107/makemytrip:latest'
         				    echo "Push Docker Image to Docker Hub: In Progress"
         				    sh 'whoami'
         				    }
@@ -80,18 +80,6 @@ pipeline {
                 		}
                 	}
         }
-        stage('Upload the docker Image to Nexus') {
-                        	steps {
-                        		script {
-                        	        withCredentials([usernamePassword(credentialsId: 'nexuscred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
-                        			sh 'docker login http://43.205.237.226:8085/repository/makemytrip/ -u admin -p ${PASSWORD}'
-                        			echo "Push Docker Image to Nexus : In Progress"
-                        			sh 'docker tag makemytrip 43.205.237.226:8085:latest'
-                        			sh 'docker push 43.205.237.226:8085/makemytrip'
-                        			echo "Push Docker Image to Nexus : Completed"
-                        			}
-                        		}
-                        	}
-                }
+
 	}
 }
