@@ -80,6 +80,19 @@ pipeline {
                 		}
                 	}
         }
+        stage('Upload the docker Image to Nexus') {
+                                	steps {
+                                		script {
+                                	        withCredentials([usernamePassword(credentialsId: 'nexuscred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
+                                			sh 'docker login http://13.232.251.125:8085/repository/makemytrip/ -u admin -p ${PASSWORD}'
+                                			echo "Push Docker Image to Nexus : In Progress"
+                                			sh 'docker tag makemytrip 13.232.251.125:8085:latest'
+                                			sh 'docker push 13.232.251.125:8085/makemytrip'
+                                			echo "Push Docker Image to Nexus : Completed"
+                                			}
+                                		}
+                                	}
+                        }
 
 	}
 }
