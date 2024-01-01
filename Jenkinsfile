@@ -55,7 +55,7 @@ pipeline {
         			        withCredentials([string(credentialsId: 'dockerhubCred', variable:'dockerhubCred')]){
         				    sh 'docker login docker.io -u yaashu2107 -p ${dockerhubCred}'
         				    echo "Push Docker Image to Docker Hub: In Progress"
-        				    sh 'docker push yaashu2107/makemytrip:latest'
+        				    sh 'docker push yaashu2107/makemytrip:dev-makemytrip-v.1.${BUILD_NUMBER}'
         				    echo "Push Docker Image to Docker Hub: In Progress"
         				    sh 'whoami'
         				    }
@@ -70,15 +70,28 @@ pipeline {
                 			echo "List the docker images present in local"
                 			docker images
                 			echo "Tagging the Docker Image: In Progress"
-                			docker tag makemytrip:latest 389580510344.dkr.ecr.ap-south-1.amazonaws.com/makemytrip:latest
+                			docker tag makemytrip:latest 389580510344.dkr.ecr.ap-south-1.amazonaws.com/makemytrip:dev-makemytrip-v.1.${BUILD_NUMBER}
                 			echo "Tagging the Docker Image: Completed"
                 			echo "Push Docker Image to ECR: In Progress"
-                			docker push 389580510344.dkr.ecr.ap-south-1.amazonaws.com/makemytrip:latest
+                			docker push 389580510344.dkr.ecr.ap-south-1.amazonaws.com/makemytrip:dev-makemytrip-v.1.${BUILD_NUMBER}
                 			echo "Push Docker Image to ECR: Completed"
                 			"""
                 			}
                 		}
                 	}
         }
+        stage('Upload the docker Image to Nexus') {
+                        	steps {
+                        		script {
+                        	        withCredentials([usernamePassword(credentialsId: 'nexuscred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
+                        			sh 'docker login http://43.205.237.226:8085/repository/makemytrip/ -u admin -p ${PASSWORD}'
+                        			echo "Push Docker Image to Nexus : In Progress"
+                        			sh 'docker tag makemytrip 43.205.237.226:8085:dev-makemytrip-v.1.${BUILD_NUMBER}'
+                        			sh 'docker push 43.205.237.226:8085/makemytrip'
+                        			echo "Push Docker Image to Nexus : Completed"
+                        			}
+                        		}
+                        	}
+                }
 	}
 }
